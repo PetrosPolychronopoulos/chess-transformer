@@ -6,6 +6,8 @@ from typing import Optional
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from chess_tournament.players import Player
 
+# Standard chess piece values used for simple material evaluation.
+# The score estimates which side has a material advantage on the board.
 
 PIECE_VALUES = {
     chess.PAWN: 1,
@@ -39,7 +41,7 @@ class TransformerPlayer(Player):
 
         self.model.config.pad_token_id = self.tokenizer.eos_token_id
 
-        self.move_counter = 0  # IMPORTANT
+        self.move_counter = 0
 
     # -------------------------
     # Material evaluation
@@ -109,7 +111,7 @@ class TransformerPlayer(Player):
         if best_gain > 0:
             return random.choice(best_moves).uci()
 
-        # LM only every 4 moves
+        # LM only every 4 moves (performance considerations)
         if self.move_counter % 4 != 0:
             return random.choice(best_moves).uci()
 
